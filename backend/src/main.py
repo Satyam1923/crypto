@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from Crypto.PublicKey import RSA
 from Crypto.Signature import pkcs1_15
-import hashlib
+from Crypto.Hash import SHA256
 
 app = FastAPI()
 
@@ -13,9 +13,8 @@ app = FastAPI()
 #   return pvt, public
 
 def hash(msg: str):
-  m = hashlib.sha256()
-  m.update(bytes(msg, 'utf-8'))
-  return m.hexdigest()
+  m = SHA256.new(msg.encode('utf-8'))
+  return m
 
 @app.get("/")
 async def root():
@@ -25,4 +24,13 @@ async def root():
 async def sign(msg: str):
   msg_hash = hash(msg)
   key = RSA.generate(2048)
-  return { "msg_hash":msg_hash }
+  # pvt_key = key.exportKey()
+  public_key = key.publickey().exportKey()
+  signer = pkcs1_15.new(key)
+  signature = signer.sign(msg_hash)
+  return {
+    "msg" : msg,
+    "msg_hash" : msg_hash.hexdigest(),
+    "public_key": public_key.hex(),
+    "signature" : signature.hex()
+  }

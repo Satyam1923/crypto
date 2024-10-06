@@ -3,10 +3,12 @@ FROM python:latest
 WORKDIR /usr/src/app
 
 RUN pip install "fastapi[standard]"
+RUN pip install pycryptodome
 
 COPY . . 
 
 EXPOSE 8000
 
-CMD [ "fastapi", "dev", "src/main.py" ]
+#CMD ["uvicorn", "src.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
+CMD ["fastapi", "run", "src/main.py"]
 
