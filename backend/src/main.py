@@ -24,7 +24,6 @@ async def root():
 async def sign(msg: str):
   msg_hash = hash(msg)
   key = RSA.generate(2048)
-  # pvt_key = key.exportKey()
   public_key = key.publickey().exportKey()
   signer = pkcs1_15.new(key)
   signature = signer.sign(msg_hash)
@@ -33,4 +32,12 @@ async def sign(msg: str):
     "msg_hash" : msg_hash.hexdigest(),
     "public_key": public_key.hex(),
     "signature" : signature.hex()
+  }
+
+@app.get("/check")
+async def check(msg: str, public_key: str, signature: str):
+  return {
+    msg: msg,
+    public_key: public_key,
+    signature: signature
   }
