@@ -17,7 +17,6 @@ const initialState: AuthState = {
   error: null,
 };
 
-// Check for localStorage only in the client
 if (typeof window !== "undefined") {
   const storedUser = localStorage.getItem('user');
   if (storedUser) {
