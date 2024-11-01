@@ -38,7 +38,7 @@ export default function Navbar() {
             </div>
           </Link>
         </li>
-        <li className="relative">
+        <li className="relative mt-3">
           <button
             onClick={() => setDropdownOpen((prev) => !prev)} // Toggle dropdown
             className="flex-initial m-4 focus:outline-none"
