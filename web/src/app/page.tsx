@@ -6,9 +6,9 @@ export default function Home() {
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-black">
       <Image
-        src="/img/background2.png"
-        width={500}
-        height={500}
+        src="/img/rab.png"
+        width={400}
+        height={400}
         alt="this is our logo"
         className="m-4"
       />
