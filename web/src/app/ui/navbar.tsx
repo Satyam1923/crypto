@@ -28,7 +28,7 @@ export default function Navbar() {
   }, [user]);
 
   return (
-    <div className="flex justify-between h-12 w-full items-center px-4 border">
+    <div className="flex sticky top-0 justify-between h-12 w-full items-center px-4 border">
       <ul className="flex w-full justify-between">
         <li>
           <Link href="/" className="flex-initial m-4">
@@ -38,7 +38,7 @@ export default function Navbar() {
             </div>
           </Link>
         </li>
-        <li className="relative">
+        <li className="relative mt-3">
           <button
             onClick={() => setDropdownOpen((prev) => !prev)} // Toggle dropdown
             className="flex-initial m-4 focus:outline-none"

@@ -4,8 +4,17 @@ from Crypto.Signature import pkcs1_15
 from Crypto.Hash import SHA256
 from data import SignData
 from data import VerifyData
+from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Change this to specify allowed origins
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # def create_keys():
 #   key = RSA.generate(2048)
@@ -35,7 +44,6 @@ async def sign(msg: SignData):
     "msg_hash" : msg_hash.hexdigest(),
     "public_key": public_key.hex(),
     "signature" : signature.hex(),
-    "pvt_key" : pvt_key
   }
 
 @app.post("/verify")
