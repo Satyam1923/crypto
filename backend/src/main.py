@@ -4,6 +4,7 @@ from Crypto.Signature import pkcs1_15
 from Crypto.Hash import SHA256
 from data import SignData
 from data import VerifyData
+from data import HashData
 from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
@@ -31,6 +32,13 @@ def hash(msg: str):
 async def root():
   return { "message": 'Hello World' }
 
+@app.post("/hash")
+async def hash_data(data: HashData):
+  h = hash(data.msg)
+  return {
+    "hash": h.hexdigest()
+  }
+
 @app.post("/sign")
 async def sign(msg: SignData):
   msg_hash = hash(msg.msg)
@@ -54,9 +62,9 @@ async def check(data: VerifyData):
   try:
     pkcs1_15.new(key).verify(h, bytes.fromhex(data.signature))
     return {
-      'result' : 'Document Not tempered'
+      'result' : 1
     }
   except (ValueError, TypeError):
     return {
-      'result' : 'Verification Failed'
+      'result' : 0
     }

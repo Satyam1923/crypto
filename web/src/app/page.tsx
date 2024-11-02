@@ -15,7 +15,7 @@ export default function Home() {
       <h1 className="m-2 text-7xl text-white">Rabbitude</h1>
       <h2 className="m-2 text-2xl text-white">Free the rabbit</h2>
       <button className="m-6 text-xl bg-white h-10 text-black w-1/3 rounded-md">
-        <Link href="/start">Start</Link>
+        <Link href="/dashboard">Start</Link>
       </button>
     </div>
   );
