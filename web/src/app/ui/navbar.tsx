@@ -87,13 +87,19 @@ export default function Navbar() {
             )}
           </button>
           {isDropdownOpen && (
-            <div className="absolute right-0 mt-2 w-48 border rounded shadow-lg z-10">
+            <div
+              className="absolute right-0 mt-2 w-48 border rounded shadow-lg z-10"
+              style={{
+                backgroundColor: "#000", // Deep black background
+                color: "#fff", // White text color
+              }}
+            >
               {user ? (
                 <div className="p-2">
                   <p className="font-semibold">{user.email}</p>
                   <button
                     onClick={handleLogout}
-                    className="block w-full text-left px-4 py-2 hover:bg-gray-100"
+                    className="block w-full text-left px-4 py-2 hover:bg-gray-700" // Optional: Change hover color
                   >
                     Logout
                   </button>
@@ -101,7 +107,7 @@ export default function Navbar() {
               ) : (
                 <Link
                   href="/login"
-                  className="block w-full text-left px-4 py-2 hover:bg-gray-100"
+                  className="block w-full text-left px-4 py-2 hover:bg-gray-700" // Optional: Change hover color
                 >
                   Login
                 </Link>

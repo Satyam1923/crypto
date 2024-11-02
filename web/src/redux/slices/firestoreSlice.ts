@@ -13,14 +13,23 @@ interface DataItem {
     value: number;
 }
 
+interface FileItem {
+    id?: string; // Firestore document ID
+    userId: string; // User ID to associate the file with
+    fileName: string;
+    fileUrl: string; // URL of the file in Firestore
+}
+
 interface FirestoreState {
     data: DataItem[];
+    files: FileItem[]; // New state for files
     status: 'idle' | 'loading' | 'succeeded' | 'failed';
     error: string | null;
 }
 
 const initialState: FirestoreState = {
     data: [],
+    files: [], // Initialize the files array
     status: 'idle',
     error: null,
 };
@@ -64,6 +73,22 @@ export const removeData = createAsyncThunk<string, string>(
     }
 );
 
+// Create an async thunk for fetching files from Firestore
+export const fetchFiles = createAsyncThunk<FileItem[], void>(
+    'firestore/fetchFiles',
+    async (_, { getState }) => {
+        const state = getState() as RootState;
+        const userId = state.auth.user?.uid; // Get the current user's ID
+
+        if (!userId) throw new Error('User is not authenticated');
+
+        const q = query(collection(db, 'yourFilesCollection'), where('userId', '==', userId));
+        const snapshot = await getDocs(q);
+
+        return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })) as FileItem[]; // Type assertion
+    }
+);
+
 const firestoreSlice = createSlice({
     name: 'firestore',
     initialState,
@@ -102,6 +127,17 @@ const firestoreSlice = createSlice({
             .addCase(removeData.rejected, (state, action) => {
                 state.status = 'failed';
                 state.error = action.error.message || 'Failed to remove data';
+            })
+            .addCase(fetchFiles.pending, (state) => {
+                state.status = 'loading';
+            })
+            .addCase(fetchFiles.fulfilled, (state, action: PayloadAction<FileItem[]>) => {
+                state.status = 'succeeded';
+                state.files = action.payload; 
+            })
+            .addCase(fetchFiles.rejected, (state, action) => {
+                state.status = 'failed';
+                state.error = action.error.message || 'Failed to fetch files';
             });
     },
 });
