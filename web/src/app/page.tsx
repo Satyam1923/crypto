@@ -6,11 +6,10 @@ export default function Home() {
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-black">
       <Image
-        src="/img/rab.png"
-        width={400}
-        height={400}
+        src="/img/logo.svg"
+        width={450}
+        height={450}
         alt="this is our logo"
-        className="m-4"
       />
       <h1 className="m-2 text-7xl text-white">VeriDoc</h1>
       <h2 className="m-2 text-2xl text-center max-w-5xl text-white">
