@@ -10,7 +10,7 @@ pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/b
 
 const MyApp: React.FC = () => {
   const dispatch = useDispatch();
-  const userEmail = useSelector((state: RootState) => state.auth.user?.email); 
+  const userEmail = useSelector((state: RootState) => state.auth.user?.email);
   const [backendResponse, setBackendResponse] = useState<string>("");
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<boolean>(false);
@@ -26,15 +26,16 @@ const MyApp: React.FC = () => {
 
   const extractTextFromPDF = async (file: File) => {
     const pdf = await pdfjs.getDocument(URL.createObjectURL(file)).promise;
+    let fullText = "";
 
     for (let i = 1; i <= pdf.numPages; i++) {
       const page = await pdf.getPage(i);
       const content = await page.getTextContent();
       const pageText = content.items.map((item: any) => item.str).join(" ");
+      fullText += pageText + " ";
     }
 
-    const text = file.name;
-    const response = await sendPdfToBackend(text);
+    const response = await sendPdfToBackend(fullText.trim());
     await uploadResponseToFirestore(response);
   };
 
@@ -45,18 +46,18 @@ const MyApp: React.FC = () => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ msg: text }), 
+        body: JSON.stringify({ msg: text }),
       });
 
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
 
-      return await response.json(); 
+      return await response.json();
     } catch (error) {
       console.error("Error sending PDF to backend:", error);
       setError("Failed to get a response from the server.");
-      throw error; 
+      return null;
     }
   };
 
@@ -67,23 +68,25 @@ const MyApp: React.FC = () => {
     }
 
     try {
-      
-      const sanitizedEmail = userEmail.replace(/[@.]/g, "_"); 
-      const uploadId = new Date().toISOString(); 
-
+      // Sanitize the email and create document and collection paths
+      const sanitizedEmail = userEmail.replace(/[@.]/g, "_");
+      const uploadId = new Date().toISOString();
+      console.log(response);
+      // Upload to Firestore with the updated structure
       await dispatch(
         addData({
-          collectionPath: `users/${sanitizedEmail}/uploads`, 
-          documentId: uploadId, 
-          response, 
+          collectionPath: `users/${sanitizedEmail}/uploads`,
+          documentId: uploadId,
+          response,
         })
       ).unwrap();
 
-      setSuccess(true); 
-      setBackendResponse("Response uploaded successfully to Firestore."); 
+      setSuccess(true);
+      setBackendResponse("Response uploaded successfully to Firestore.");
     } catch (err) {
       console.error("Error uploading response to Firestore:", err);
       setError("Failed to upload response to Firestore.");
+    }
   };
 
   return (
@@ -99,6 +102,6 @@ const MyApp: React.FC = () => {
       )}
     </div>
   );
-}};
+};
 
 export default MyApp;

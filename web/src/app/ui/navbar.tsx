@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
 import { IoHomeOutline } from "react-icons/io5";
 import { FaUserCircle } from "react-icons/fa";
@@ -15,18 +15,46 @@ export default function Navbar() {
   const router = useRouter();
   const { user } = useSelector((state: RootState) => state.auth);
   const [isDropdownOpen, setDropdownOpen] = useState(false);
+  const [isMounted, setIsMounted] = useState(false); // New state to track mounting
 
-  const handleLogout = async () => {
-    await dispatch(logout());
-    setDropdownOpen(false);
-    router.push("/");
-  };
+  useEffect(() => {
+    setIsMounted(true); // Set to true once the component has mounted
+  }, []);
+
+  const handleLogout = useCallback(async () => {
+    try {
+      await dispatch(logout());
+      setDropdownOpen(false);
+      router.push("/");
+    } catch (error) {
+      console.error("Failed to logout:", error);
+    }
+  }, [dispatch, router]);
+
+  const toggleDropdown = () => setDropdownOpen((prev) => !prev);
+
+  const closeDropdown = () => setDropdownOpen(false);
 
   useEffect(() => {
     if (!user) {
-      setDropdownOpen(false);
+      closeDropdown();
     }
   }, [user]);
+
+  // Close dropdown when clicking outside of it
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as HTMLElement;
+      if (!target.closest(".dropdown") && isDropdownOpen) {
+        closeDropdown();
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isDropdownOpen]);
 
   return (
     <div className="flex sticky top-0 justify-between h-12 w-full items-center px-4 border">
@@ -39,18 +67,20 @@ export default function Navbar() {
             </div>
           </Link>
         </li>
-        <li className="relative mt-1">
+        <li className="relative mt-1 dropdown">
           <button
-            onClick={() => setDropdownOpen((prev) => !prev)}
+            onClick={toggleDropdown}
             className="flex-initial m-4 focus:outline-none"
+            aria-haspopup="true"
+            aria-expanded={isDropdownOpen}
           >
-            {user && user.photoURL ? (
+            {user && isMounted && user.photoURL ? ( // Check if mounted before rendering Image
               <Image
                 src={user.photoURL}
                 alt="User profile"
-                width={32} 
-                height={32} 
-                className="rounded-full" 
+                width={32}
+                height={32}
+                className="rounded-full"
               />
             ) : (
               <FaUserCircle className="w-8 h-8" />
@@ -63,7 +93,7 @@ export default function Navbar() {
                   <p className="font-semibold">{user.email}</p>
                   <button
                     onClick={handleLogout}
-                    className="block w-full text-left px-4 py-2"
+                    className="block w-full text-left px-4 py-2 hover:bg-gray-100"
                   >
                     Logout
                   </button>
@@ -71,7 +101,7 @@ export default function Navbar() {
               ) : (
                 <Link
                   href="/login"
-                  className="block w-full text-left px-4 py-2"
+                  className="block w-full text-left px-4 py-2 hover:bg-gray-100"
                 >
                   Login
                 </Link>
