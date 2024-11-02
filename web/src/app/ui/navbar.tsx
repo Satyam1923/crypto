@@ -57,7 +57,9 @@ export default function Navbar() {
   }, [isDropdownOpen]);
 
   return (
-    <div className="flex sticky top-0 justify-between h-12 w-full items-center px-4 border">
+    <div className="flex sticky top-0 justify-between h-12 w-full items-center px-4 border bg-black text-white">
+      {" "}
+      {/* Updated with bg-black and text-white */}
       <ul className="flex w-full justify-between">
         <li>
           <Link href="/" className="flex-initial m-4">

@@ -8,3 +8,6 @@ class VerifyData(BaseModel):
   msg: str
   public_key: str
   signature: str
+
+class HashData(BaseModel):
+  msg: str
