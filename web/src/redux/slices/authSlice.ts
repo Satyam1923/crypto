@@ -1,12 +1,14 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
-import { signInWithPopup, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut } from "firebase/auth";
+import { signInWithPopup, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, User } from "firebase/auth";
 import { auth, googleProvider } from '../../lib/firebase';
-import { User as FirebaseUser } from 'firebase/auth';
-
-interface User extends FirebaseUser {}
 
 interface AuthState {
-  user: User | null;
+  user: {
+    uid: string;
+    email: string | null;
+    displayName: string | null;
+    photoURL: string | null;
+  } | null;
   status: 'idle' | 'loading' | 'succeeded' | 'failed';
   error: string | null;
 }
@@ -17,6 +19,7 @@ const initialState: AuthState = {
   error: null,
 };
 
+// Initialize state with localStorage user if available
 if (typeof window !== "undefined") {
   const storedUser = localStorage.getItem('user');
   if (storedUser) {
@@ -27,9 +30,10 @@ if (typeof window !== "undefined") {
 export const loginWithGoogle = createAsyncThunk('auth/loginWithGoogle', async (_, thunkAPI) => {
   try {
     const result = await signInWithPopup(auth, googleProvider);
-    const user = result.user;
-    localStorage.setItem('user', JSON.stringify(user));
-    return user;
+    const { displayName, email, uid, photoURL } = result.user;
+    const userData = { displayName, email, uid, photoURL }; // Store essential data only
+    localStorage.setItem('user', JSON.stringify(userData));
+    return userData;
   } catch (error: any) {
     return thunkAPI.rejectWithValue(error.message);
   }
@@ -38,7 +42,8 @@ export const loginWithGoogle = createAsyncThunk('auth/loginWithGoogle', async (_
 export const loginWithEmail = createAsyncThunk('auth/loginWithEmail', async ({ email, password }: { email: string; password: string }, thunkAPI) => {
   try {
     const result = await signInWithEmailAndPassword(auth, email, password);
-    const user = result.user;
+    const { uid, email: userEmail, displayName, photoURL } = result.user;
+    const user = { uid, email: userEmail, displayName, photoURL };
     localStorage.setItem('user', JSON.stringify(user));
     return user;
   } catch (error: any) {
@@ -49,7 +54,8 @@ export const loginWithEmail = createAsyncThunk('auth/loginWithEmail', async ({ e
 export const registerWithEmail = createAsyncThunk('auth/registerWithEmail', async ({ email, password }: { email: string; password: string }, thunkAPI) => {
   try {
     const result = await createUserWithEmailAndPassword(auth, email, password);
-    const user = result.user;
+    const { uid, email: userEmail, displayName, photoURL } = result.user;
+    const user = { uid, email: userEmail, displayName, photoURL };
     localStorage.setItem('user', JSON.stringify(user));
     return user;
   } catch (error: any) {
@@ -72,13 +78,13 @@ const authSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
-      .addCase(loginWithGoogle.fulfilled, (state, action: PayloadAction<User>) => {
+      .addCase(loginWithGoogle.fulfilled, (state, action: PayloadAction<AuthState['user']>) => {
         state.user = action.payload;
       })
-      .addCase(loginWithEmail.fulfilled, (state, action: PayloadAction<User>) => {
+      .addCase(loginWithEmail.fulfilled, (state, action: PayloadAction<AuthState['user']>) => {
         state.user = action.payload;
       })
-      .addCase(registerWithEmail.fulfilled, (state, action: PayloadAction<User>) => {
+      .addCase(registerWithEmail.fulfilled, (state, action: PayloadAction<AuthState['user']>) => {
         state.user = action.payload;
       })
       .addCase(logout.fulfilled, (state) => {

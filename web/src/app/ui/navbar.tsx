@@ -8,6 +8,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { AppDispatch, RootState } from "../../redux/store";
 import { logout } from "../../redux/slices/authSlice";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 
 export default function Navbar() {
   const dispatch = useDispatch<AppDispatch>();
@@ -38,15 +39,21 @@ export default function Navbar() {
             </div>
           </Link>
         </li>
-        <li className="relative mt-3">
+        <li className="relative mt-1">
           <button
-            onClick={() => setDropdownOpen((prev) => !prev)} // Toggle dropdown
+            onClick={() => setDropdownOpen((prev) => !prev)}
             className="flex-initial m-4 focus:outline-none"
           >
-            {user ? (
-              <p className="font-semibold">{user.email}</p>
+            {user && user.photoURL ? (
+              <Image
+                src={user.photoURL}
+                alt="User profile"
+                width={32} 
+                height={32} 
+                className="rounded-full" 
+              />
             ) : (
-              <FaUserCircle />
+              <FaUserCircle className="w-8 h-8" />
             )}
           </button>
           {isDropdownOpen && (
