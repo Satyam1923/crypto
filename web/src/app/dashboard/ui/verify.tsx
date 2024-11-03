@@ -112,7 +112,7 @@ export default function Verify() {
   };
 
   return (
-    <Container sx={{ bgcolor: "black", minHeight: "100vh", p: 5 }}>
+    <Container sx={{ bgcolor: "black", p: 5 }}>
       <Box display="flex" justifyContent="space-around" flexWrap="wrap" gap={4}>
         {/* Verify PDF Card */}
         <Card sx={{ maxWidth: 320, bgcolor: "grey.900" }}>
