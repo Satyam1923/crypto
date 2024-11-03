@@ -10,12 +10,10 @@ import {
   Card,
   CardContent,
   Typography,
-  List,
-  ListItem,
   Button,
   Alert,
-  CircularProgress,
 } from "@mui/material";
+import UploadIcon from "@mui/icons-material/CloudUpload"; // Import upload icon
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
 
@@ -112,20 +110,60 @@ export default function Verify() {
   };
 
   return (
-    <Container sx={{ bgcolor: "black", p: 5 }}>
-      <Box display="flex" justifyContent="space-around" flexWrap="wrap" gap={4}>
+    <Container sx={{ bgcolor: "black" }}>
+      <Box
+        display="flex"
+        justifyContent="center"
+        sx={{ pt: "20px" }}
+        flexWrap="wrap"
+        gap={4}
+      >
         {/* Verify PDF Card */}
-        <Card sx={{ maxWidth: 320, bgcolor: "grey.900" }}>
+        <Card sx={{ maxWidth: 320, minWidth: 320, bgcolor: "grey.900" }}>
           <CardContent>
             <Typography variant="h5" color="white" align="center" gutterBottom>
               Verify PDF
             </Typography>
+            {/* Custom file input button */}
             <input
               type="file"
               accept="application/pdf"
+              id="file-upload"
               onChange={(e) => setSelectedFile(e.target.files?.[0] || null)}
-              style={{ color: "white", marginBottom: "16px" }}
+              style={{ display: "none" }} // Hide the default file input
             />
+            <label htmlFor="file-upload">
+              <Button
+                variant="outlined"
+                component="span"
+                startIcon={<UploadIcon />}
+                fullWidth
+                sx={{
+                  mb: 2,
+                  color: "white",
+                  borderColor: "white",
+                  "&:hover": {
+                    borderColor: "white",
+                    backgroundColor: "rgba(255, 255, 255, 0.1)",
+                  },
+                }} // Change to white
+              >
+                Browse PDF
+              </Button>
+            </label>
+
+            {/* Display the selected file name */}
+            {selectedFile && (
+              <Typography
+                variant="body1"
+                color="white"
+                align="center"
+                sx={{ mb: 2 }}
+              >
+                Selected File: {selectedFile.name}
+              </Typography>
+            )}
+
             <select
               onChange={handleFileSelect}
               style={{
