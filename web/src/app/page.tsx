@@ -4,15 +4,15 @@ import Image from "next/image";
 
 export default function Home() {
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-black">
+    <div className="flex flex-col items-center justify-start min-h-screen bg-black">
       <Image
         src="/img/logo.svg"
-        width={450}
-        height={450}
+        width={400}
+        height={400}
         alt="this is our logo"
       />
       <h1 className="m-2 text-7xl text-white">VeriDoc</h1>
-      <h2 className="m-2 text-2xl text-center max-w-5xl text-white">
+      <h2 className="m-2 text-xl text-center max-w-4xl text-white">
         VeriDoc is a web application designed to simplify the process of
         uploading, processing, and managing PDF documents. The application
         utilizes the Next framework, Redux for state management, and

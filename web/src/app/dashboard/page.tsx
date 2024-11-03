@@ -139,7 +139,17 @@ const MyApp: React.FC = () => {
   };
 
   return (
-    <Container sx={{ bgcolor: "black", minHeight: "100vh", p: 5 }}>
+    <Container
+      sx={{
+        bgcolor: "black",
+        minHeight: "100vh",
+        minWidth: "100vw",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        p: 5,
+      }}
+    >
       <Box display="flex" justifyContent="space-around" flexWrap="wrap" gap={4}>
         {/* Uploaded Files Card */}
         <Card sx={{ maxWidth: 320, bgcolor: "grey.900" }}>
@@ -199,8 +209,6 @@ const MyApp: React.FC = () => {
             )}
           </CardContent>
         </Card>
-
-        {/* Verify Component */}
         <Verify />
       </Box>
     </Container>
