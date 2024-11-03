@@ -45,17 +45,17 @@ export default function Footer() {
 
         {/* Link Group */}
         <Box sx={{ display: "flex", gap: 4 }}>
-          <Link href="#" passHref>
+          <Link href="/about" passHref>
             <Typography color="inherit" sx={{ textDecoration: "none" }}>
               About
             </Typography>
           </Link>
-          <Link href="#" passHref>
+          <Link href="/privacy" passHref>
             <Typography color="inherit" sx={{ textDecoration: "none" }}>
               Privacy Policy
             </Typography>
           </Link>
-          <Link href="#" passHref>
+          <Link href="/licensing" passHref>
             <Typography color="inherit" sx={{ textDecoration: "none" }}>
               Licensing
             </Typography>
