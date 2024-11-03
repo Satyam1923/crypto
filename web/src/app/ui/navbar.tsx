@@ -15,10 +15,10 @@ export default function Navbar() {
   const router = useRouter();
   const { user } = useSelector((state: RootState) => state.auth);
   const [isDropdownOpen, setDropdownOpen] = useState(false);
-  const [isMounted, setIsMounted] = useState(false); // New state to track mounting
+  const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
-    setIsMounted(true); // Set to true once the component has mounted
+    setIsMounted(true);
   }, []);
 
   const handleLogout = useCallback(async () => {
@@ -28,11 +28,11 @@ export default function Navbar() {
       router.push("/");
     } catch (error) {
       console.error("Failed to logout:", error);
+      alert("Error logging out. Please try again."); 
     }
   }, [dispatch, router]);
 
   const toggleDropdown = () => setDropdownOpen((prev) => !prev);
-
   const closeDropdown = () => setDropdownOpen(false);
 
   useEffect(() => {
@@ -41,7 +41,6 @@ export default function Navbar() {
     }
   }, [user]);
 
-  // Close dropdown when clicking outside of it
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       const target = event.target as HTMLElement;
@@ -57,12 +56,10 @@ export default function Navbar() {
   }, [isDropdownOpen]);
 
   return (
-    <div className="flex sticky top-0 justify-between h-12 w-full items-center px-4 border bg-black text-white">
-      {" "}
-      {/* Updated with bg-black and text-white */}
+    <div className="flex justify-between h-12 w-full items-center px-4 border bg-black text-white">
       <ul className="flex w-full justify-between">
         <li>
-          <Link href="/" className="flex-initial m-4">
+          <Link href="/" className="flex-initial m-4" aria-label="Home">
             <div className="flex gap-4 justify-center items-center">
               <IoHomeOutline />
               Home
@@ -75,8 +72,9 @@ export default function Navbar() {
             className="flex-initial m-4 focus:outline-none"
             aria-haspopup="true"
             aria-expanded={isDropdownOpen}
+            aria-label="User menu"
           >
-            {user && isMounted && user.photoURL ? ( // Check if mounted before rendering Image
+            {user && isMounted && user.photoURL ? (
               <Image
                 src={user.photoURL}
                 alt="User profile"
@@ -90,10 +88,10 @@ export default function Navbar() {
           </button>
           {isDropdownOpen && (
             <div
-              className="absolute right-0 mt-2 w-48 border rounded shadow-lg z-10"
+              className="absolute right-0 mt-2 w-48 border rounded shadow-lg z-10 transition duration-200 ease-in-out"
               style={{
-                backgroundColor: "#000", // Deep black background
-                color: "#fff", // White text color
+                backgroundColor: "#000",
+                color: "#fff",
               }}
             >
               {user ? (
@@ -101,7 +99,7 @@ export default function Navbar() {
                   <p className="font-semibold">{user.email}</p>
                   <button
                     onClick={handleLogout}
-                    className="block w-full text-left px-4 py-2 hover:bg-gray-700" // Optional: Change hover color
+                    className="block w-full text-left px-4 py-2 hover:bg-gray-700 transition duration-150"
                   >
                     Logout
                   </button>
@@ -109,7 +107,7 @@ export default function Navbar() {
               ) : (
                 <Link
                   href="/login"
-                  className="block w-full text-left px-4 py-2 hover:bg-gray-700" // Optional: Change hover color
+                  className="block w-full text-left px-4 py-2 hover:bg-gray-700 transition duration-150"
                 >
                   Login
                 </Link>
