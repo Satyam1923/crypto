@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { addData, fetchData } from "../../redux/slices/firestoreSlice";
 import { RootState } from "../../redux/store";
 import Verify from "./ui/verify";
-
+import DescriptionIcon from "@mui/icons-material/Description";
 import {
   Card,
   CardContent,
@@ -18,7 +18,10 @@ import {
   Container,
   List,
   ListItem,
+  ListItemIcon,
+  ListItemText,
 } from "@mui/material";
+import { UploadFile as UploadIcon } from "@mui/icons-material";
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
 
@@ -31,6 +34,7 @@ const MyApp: React.FC = () => {
   const [uploadedFiles, setUploadedFiles] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [fileName, setFileName] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchFiles = async () => {
@@ -54,6 +58,7 @@ const MyApp: React.FC = () => {
     const file = event.target.files?.[0];
     if (file && file.type === "application/pdf") {
       setSelectedFile(file);
+      setFileName(file.name); // Set the selected file name
     } else {
       alert("Please select a valid PDF file.");
     }
@@ -63,13 +68,13 @@ const MyApp: React.FC = () => {
     if (selectedFile) {
       await extractTextFromPDF(selectedFile);
       setSelectedFile(null);
+      setFileName(null); // Clear the displayed file name after upload
     } else {
       alert("Please select a PDF file to upload.");
     }
   };
 
   const extractTextFromPDF = async (file: File) => {
-    const fileName = file.name;
     const pdf = await pdfjs.getDocument(URL.createObjectURL(file)).promise;
     let fullText = "";
 
@@ -81,7 +86,7 @@ const MyApp: React.FC = () => {
     }
 
     const response = await sendPdfToBackend(fullText.trim());
-    await uploadResponseToFirestore(response, fileName);
+    await uploadResponseToFirestore(response, file.name);
   };
 
   const sendPdfToBackend = async (text: string) => {
@@ -151,7 +156,6 @@ const MyApp: React.FC = () => {
       }}
     >
       <Box display="flex" justifyContent="space-around" flexWrap="wrap" gap={4}>
-        {/* Uploaded Files Card */}
         <Card sx={{ maxWidth: 320, bgcolor: "grey.900" }}>
           <CardContent>
             <Typography variant="h5" color="white" align="center" gutterBottom>
@@ -164,9 +168,15 @@ const MyApp: React.FC = () => {
                 {uploadedFiles.length > 0 ? (
                   uploadedFiles.map((file) => (
                     <ListItem key={file.id}>
-                      <Typography color="white">
-                        {file.response.fileName || "No File Name"}
-                      </Typography>
+                      <ListItemIcon>
+                        <DescriptionIcon sx={{ color: "white" }} />{" "}
+                        {/* Add PDF icon */}
+                      </ListItemIcon>
+                      <ListItemText>
+                        <Typography color="white">
+                          {file.response.fileName || "No File Name"}
+                        </Typography>
+                      </ListItemText>
                     </ListItem>
                   ))
                 ) : (
@@ -179,24 +189,53 @@ const MyApp: React.FC = () => {
 
         {/* Upload PDF Card */}
         <Card sx={{ maxWidth: 320, bgcolor: "grey.900" }}>
-          <CardContent>
+          <CardContent
+            style={{ color: "white", minHeight: 100, marginBottom: "16px" }}
+          >
             <Typography variant="h5" color="white" align="center" gutterBottom>
               Upload PDF
             </Typography>
+
+            {/* Hidden file input */}
             <input
               type="file"
               accept="application/pdf"
               onChange={onFileChange}
-              style={{ color: "white", marginBottom: "16px" }}
+              style={{ display: "none" }}
+              id="pdf-upload-input"
             />
+
+            {/* Styled Browse Button */}
+            <label htmlFor="pdf-upload-input">
+              <Button
+                variant="outlined"
+                color="secondary"
+                component="span"
+                startIcon={<UploadIcon />}
+                fullWidth
+                sx={{ marginBottom: 2, color: "white", borderColor: "white" }}
+              >
+                Browse PDF
+              </Button>
+            </label>
+
+            {/* Display the selected file name */}
+            {fileName && (
+              <Typography color="white" sx={{ mt: 1, mb: 2 }}>
+                Selected file: {fileName}
+              </Typography>
+            )}
+
             <Button
               variant="contained"
               color="primary"
               fullWidth
               onClick={handleUpload}
+              sx={{ marginBottom: 2 }}
             >
               Upload
             </Button>
+
             {error && (
               <Alert severity="error" sx={{ mt: 2 }}>
                 {error}
@@ -208,8 +247,8 @@ const MyApp: React.FC = () => {
               </Alert>
             )}
           </CardContent>
+          <Verify />
         </Card>
-        <Verify />
       </Box>
     </Container>
   );
