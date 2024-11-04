@@ -206,6 +206,7 @@ const MyApp: React.FC = () => {
           sx={{
             maxWidth: 320,
             minWidth: 320,
+            maxHeight:260,
             bgcolor: "rgba(0 0 0 / 0.5)",
             backdropFilter: "blur(5px)",
             borderRadius: "12px",
