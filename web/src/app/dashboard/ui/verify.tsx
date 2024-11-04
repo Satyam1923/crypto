@@ -53,19 +53,25 @@ export default function Verify() {
 
   const verifyFile = async () => {
     if (selectedFileData && selectedFile) {
-      const text = await extractTextFromPDF(selectedFile);
-      const response = await sendPdfToBackend(
-        text,
-        selectedFileData.response.public_key,
-        selectedFileData.response.signature
-      );
-      if (response) {
-        setBackendResponse(
-          response.result === 1
-            ? "Verification successful"
-            : "Verification failed"
+      try {
+        const text = await extractTextFromPDF(selectedFile);
+        const response = await sendPdfToBackend(
+          text,
+          selectedFileData.response.public_key,
+          selectedFileData.response.signature
         );
-        setError(null); // Clear any previous error
+
+        if (response) {
+          setBackendResponse(
+            response.result === 1
+              ? "Verification successful"
+              : "Verification failed"
+          );
+          setError(null); // Clear any previous error
+        }
+      } catch (err) {
+        console.error("Error during verification:", err);
+        setError("An error occurred during verification.");
       }
     } else {
       alert("Please select a PDF file and a record to verify.");
@@ -110,152 +116,145 @@ export default function Verify() {
   };
 
   return (
-    <Container>
-      <Box
-        display="flex"
-        sx={{ pt: "20px", justifyContent: "center" }}
-        flexWrap="wrap"
+    <Container className="w-56">
+      <Card
+        sx={{
+          maxWidth: 320,
+          minWidth: 320,
+          bgcolor: "rgba(0 0 0 / 0.5)",
+          backdropFilter: "blur(5px)",
+          borderRadius: "12px",
+          padding: 2,
+          transition: "transform 0.3s ease, box-shadow 0.3s ease",
+          "&:hover": {
+            transform: "scale(1.05)",
+            boxShadow: "0 8px 16px rgba(0, 0, 0, 0.2)",
+          },
+        }}
       >
-        {/* Verify PDF Card */}
-        <Card
-          sx={{
-            maxWidth: 320,
-            minWidth: 320,
-            bgcolor: "rgba(0 0 0 / 0.5)",
-            backdropFilter: "blur(5px)",
-            borderRadius: "12px",
-            padding: 2,
-            transition: "transform 0.3s ease, box-shadow 0.3s ease",
-            "&:hover": {
-              transform: "scale(1.05)",
-              boxShadow: "0 8px 16px rgba(0, 0, 0, 0.2)",
-            },
-          }}
-        >
-          <CardContent>
-            <Typography variant="h5" color="white" align="center" gutterBottom>
-              Verify PDF
-            </Typography>
-            {/* Custom file input button */}
-            <input
-              type="file"
-              accept="application/pdf"
-              id="file-upload"
-              onChange={(e) => setSelectedFile(e.target.files?.[0] || null)}
-              style={{ display: "none" }} // Hide the default file input
-            />
-            <label htmlFor="file-upload">
-              <Button
-                variant="outlined"
-                component="span"
-                startIcon={<UploadIcon />}
-                fullWidth
-                sx={{
-                  mb: 2,
-                  color: "white",
+        <CardContent>
+          <Typography variant="h5" color="white" align="center" gutterBottom>
+            Verify PDF
+          </Typography>
+          {/* Custom file input button */}
+          <input
+            type="file"
+            accept="application/pdf"
+            id="file-upload"
+            onChange={(e) => setSelectedFile(e.target.files?.[0] || null)}
+            style={{ display: "none" }} // Hide the default file input
+          />
+          <label htmlFor="file-upload">
+            <Button
+              variant="outlined"
+              component="span"
+              startIcon={<UploadIcon />}
+              fullWidth
+              sx={{
+                mb: 2,
+                color: "white",
+                borderColor: "white",
+                "&:hover": {
                   borderColor: "white",
-                  "&:hover": {
-                    borderColor: "white",
-                    backgroundColor: "rgba(255, 255, 255, 0.1)",
-                  },
-                }}
-              >
-                Browse PDF
-              </Button>
-            </label>
-
-            {/* Display the selected file name */}
-            {selectedFile && (
-              <Typography
-                variant="body1"
-                color="white"
-                align="center"
-                sx={{ mb: 2 }}
-              >
-                Selected File: {selectedFile.name}
-              </Typography>
-            )}
-
-            {/* Dropdown with blur effect */}
-            <select
-              onChange={handleFileSelect}
-              style={{
-                width: "100%",
-                marginBottom: "16px",
-                backgroundColor: "rgba(0, 0, 0, 0.7)", // Darker semi-transparent background
-                color: "white", // Ensure the font color is white
-                padding: "8px",
-                borderRadius: "4px",
-                backdropFilter: "blur(10px)", // Apply blur effect
-                border: "1px solid rgba(255, 255, 255, 0.3)", // Optional: border to enhance visibility
-                appearance: "none", // Remove default styles in some browsers
-                WebkitAppearance: "none", // Safari fix
-                MozAppearance: "none", // Firefox fix
+                  backgroundColor: "rgba(255, 255, 255, 0.1)",
+                },
               }}
             >
+              Browse PDF
+            </Button>
+          </label>
+
+          {/* Display the selected file name */}
+          {selectedFile && (
+            <Typography
+              variant="body1"
+              color="white"
+              align="center"
+              sx={{ mb: 2 }}
+            >
+              Selected File: {selectedFile.name}
+            </Typography>
+          )}
+
+          {/* Dropdown with blur effect */}
+          <select
+            onChange={handleFileSelect}
+            style={{
+              width: "100%",
+              marginBottom: "16px",
+              backgroundColor: "rgba(0, 0, 0, 0.7)", // Darker semi-transparent background
+              color: "white", // Ensure the font color is white
+              padding: "8px",
+              borderRadius: "4px",
+              backdropFilter: "blur(10px)", // Apply blur effect
+              border: "1px solid rgba(255, 255, 255, 0.3)", // Optional: border to enhance visibility
+              appearance: "none", // Remove default styles in some browsers
+              WebkitAppearance: "none", // Safari fix
+              MozAppearance: "none", // Firefox fix
+            }}
+          >
+            <option
+              value=""
+              style={{
+                color: "white",
+                backgroundColor: "rgba(0, 0, 0, 0.7)",
+              }}
+            >
+              Select a file to verify
+            </option>
+            {loading ? (
               <option
-                value=""
+                disabled
                 style={{
                   color: "white",
                   backgroundColor: "rgba(0, 0, 0, 0.7)",
                 }}
               >
-                Select a file to verify
+                Loading...
               </option>
-              {loading ? (
+            ) : (
+              files.map((file) => (
                 <option
-                  disabled
+                  key={file.id}
+                  value={file.id}
                   style={{
                     color: "white",
                     backgroundColor: "rgba(0, 0, 0, 0.7)",
                   }}
                 >
-                  Loading...
+                  {file.response.fileName || "Unnamed file"}
                 </option>
-              ) : (
-                files.map((file) => (
-                  <option
-                    key={file.id}
-                    value={file.id}
-                    style={{
-                      color: "white",
-                      backgroundColor: "rgba(0, 0, 0, 0.7)",
-                    }}
-                  >
-                    {file.response.fileName || "Unnamed file"}
-                  </option>
-                ))
-              )}
-            </select>
+              ))
+            )}
+          </select>
 
-            <Button
-              variant="contained"
-              color="primary"
-              fullWidth
-              onClick={verifyFile}
+          <Button
+            variant="contained"
+            color="primary"
+            fullWidth
+            onClick={verifyFile}
+          >
+            Verify
+          </Button>
+          {error && (
+            <Alert severity="error" sx={{ mt: 2 }}>
+              {error}
+            </Alert>
+          )}
+          {backendResponse && (
+            <Alert
+              severity={
+                backendResponse === "Verification successful"
+                  ? "success"
+                  : "error"
+              }
+              sx={{ mt: 2 }}
             >
-              Verify
-            </Button>
-            {error && (
-              <Alert severity="error" sx={{ mt: 2 }}>
-                {error}
-              </Alert>
-            )}
-            {backendResponse && (
-              <Alert
-                severity={
-                  backendResponse === "Verification successful"
-                    ? "success"
-                    : "error"
-                }
-                sx={{ mt: 2 }}
-              >
-                {backendResponse}
-              </Alert>
-            )}
-          </CardContent>
-        </Card>
-      </Box>
+              {backendResponse}
+            </Alert>
+          )}
+        </CardContent>
+      </Card>
     </Container>
   );
 }
