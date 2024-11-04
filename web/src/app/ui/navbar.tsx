@@ -28,7 +28,7 @@ export default function Navbar() {
       router.push("/");
     } catch (error) {
       console.error("Failed to logout:", error);
-      alert("Error logging out. Please try again."); 
+      alert("Error logging out. Please try again.");
     }
   }, [dispatch, router]);
 
@@ -56,66 +56,64 @@ export default function Navbar() {
   }, [isDropdownOpen]);
 
   return (
-    <div className="flex justify-between h-12 w-full items-center px-4 border bg-black text-white">
-      <ul className="flex w-full justify-between">
-        <li>
-          <Link href="/" className="flex-initial m-4" aria-label="Home">
-            <div className="flex gap-4 justify-center items-center">
-              <IoHomeOutline />
-              Home
-            </div>
-          </Link>
-        </li>
-        <li className="relative mt-1 dropdown">
-          <button
-            onClick={toggleDropdown}
-            className="flex-initial m-4 focus:outline-none"
-            aria-haspopup="true"
-            aria-expanded={isDropdownOpen}
-            aria-label="User menu"
-          >
-            {user && isMounted && user.photoURL ? (
-              <Image
-                src={user.photoURL}
-                alt="User profile"
-                width={32}
-                height={32}
-                className="rounded-full"
-              />
-            ) : (
-              <FaUserCircle className="w-8 h-8" />
-            )}
-          </button>
-          {isDropdownOpen && (
-            <div
-              className="absolute right-0 mt-2 w-48 border rounded shadow-lg z-10 transition duration-200 ease-in-out"
-              style={{
-                backgroundColor: "#000",
-                color: "#fff",
-              }}
-            >
-              {user ? (
-                <div className="p-2">
-                  <p className="font-semibold">{user.email}</p>
-                  <button
-                    onClick={handleLogout}
-                    className="block w-full text-left px-4 py-2 hover:bg-gray-700 transition duration-150"
-                  >
-                    Logout
-                  </button>
+    <div className="sticky top-0 z-50 bg-black/60 backdrop-blur-lg shadow-lg">
+      <div className="flex justify-center items-center h-12 px-4 mx-auto max-w-screen-lg">
+        <div className="flex justify-between w-full items-center text-white">
+          <ul className="flex w-full justify-between">
+            <li>
+              <Link href="/" className="flex-initial m-4" aria-label="Home">
+                <div className="flex gap-2 items-center">
+                  <IoHomeOutline />
+                  Home
                 </div>
-              ) : (
-                <Link
-                  href="/login"
-                  className="block w-full text-left px-4 py-2 hover:bg-gray-700 transition duration-150"
-                >
-                  Login
-                </Link>
+              </Link>
+            </li>
+            <li className="relative mt-1 dropdown">
+              <button
+                onClick={toggleDropdown}
+                className="flex-initial m-4 focus:outline-none"
+                aria-haspopup="true"
+                aria-expanded={isDropdownOpen}
+                aria-label="User menu"
+              >
+                {user && isMounted && user.photoURL ? (
+                  <Image
+                    src={user.photoURL}
+                    alt="User profile"
+                    width={32}
+                    height={32}
+                    className="rounded-full"
+                  />
+                ) : (
+                  <FaUserCircle className="w-8 h-8" />
+                )}
+              </button>
+              {isDropdownOpen && (
+                <div className="absolute right-0 mt-2 w-50 rounded-lg shadow-lg z-10 backdrop-blur-lg bg-black/70 border border-gray-700 transition duration-200 ease-in-out">
+                  {user ? (
+                    <div className="p-2">
+                      <p className="font-semibold">{user.email}</p>
+                      <button
+                        onClick={handleLogout}
+                        className="block w-full text-left px-4 py-2 hover:bg-gray-700 transition duration-150"
+                      >
+                        Logout
+                      </button>
+                    </div>
+                  ) : (
+                    <Link
+                      href="/login"
+                      className="block w-full text-left px-4 py-2 hover:bg-gray-700 transition duration-150"
+                    >
+                      Login
+                    </Link>
+                  )}
+                </div>
               )}
-            </div>
-          )}
-        </li>
-      </ul>
+            </li>
+          </ul>
+        </div>
+      </div>
     </div>
   );
 }
