@@ -110,16 +110,25 @@ export default function Verify() {
   };
 
   return (
-    <Container sx={{ bgcolor: "black" }}>
+    <Container>
       <Box
         display="flex"
-        justifyContent="center"
-        sx={{ pt: "20px" }}
+        sx={{ pt: "20px", justifyContent: "center" }}
         flexWrap="wrap"
-        gap={4}
       >
         {/* Verify PDF Card */}
-        <Card sx={{ maxWidth: 320, minWidth: 320, bgcolor: "grey.900" }}>
+        <Card
+          sx={{
+            maxWidth: "400px",
+            minWidth: 320,
+            maxWidth: 320,
+            bgcolor: "rgba(0 0 0 / 0.5)", // Semi-transparent dark background
+            backdropFilter: "blur(5px)", // Apply the blur effect
+            borderRadius: "12px", // Optional: Add rounded corners
+            padding: 2, // Add some padding inside the card
+            boxShadow: 3, // Add shadow for depth
+          }}
+        >
           <CardContent>
             <Typography variant="h5" color="white" align="center" gutterBottom>
               Verify PDF
@@ -146,7 +155,7 @@ export default function Verify() {
                     borderColor: "white",
                     backgroundColor: "rgba(255, 255, 255, 0.1)",
                   },
-                }} // Change to white
+                }}
               >
                 Browse PDF
               </Button>
@@ -164,20 +173,23 @@ export default function Verify() {
               </Typography>
             )}
 
+            {/* Dropdown with blur effect */}
             <select
               onChange={handleFileSelect}
               style={{
                 width: "100%",
                 marginBottom: "16px",
-                backgroundColor: "#333",
+                backgroundColor: "rgba(0, 0, 0, 0.5)", // Semi-transparent dark background
                 color: "white",
                 padding: "8px",
                 borderRadius: "4px",
+                backdropFilter: "blur(5px)", // Apply blur effect
+                border: "1px solid rgba(255, 255, 255, 0.3)", // Optional: border to enhance visibility
               }}
             >
-              <option value="">Select a file to verify</option>
+              <option  value="">Select a file to verify</option>
               {loading ? (
-                <option disabled>Loading...</option>
+                <option  disabled>Loading...</option>
               ) : (
                 files.map((file) => (
                   <option key={file.id} value={file.id}>
@@ -186,6 +198,7 @@ export default function Verify() {
                 ))
               )}
             </select>
+
             <Button
               variant="contained"
               color="primary"
