@@ -159,10 +159,15 @@ const MyApp: React.FC = () => {
           sx={{
             maxWidth: 320,
             minWidth: 320,
-            bgcolor: "rgba(0 0 0 / 0.5)", // Semi-transparent dark background
-            backdropFilter: "blur(5px)", // Apply the blur effect
-            borderRadius: "12px", // Optional: Add rounded corners
-            padding: 2, // Add some padding inside the card
+            bgcolor: "rgba(0 0 0 / 0.5)",
+            backdropFilter: "blur(5px)",
+            borderRadius: "12px",
+            padding: 2,
+            transition: "transform 0.3s ease, box-shadow 0.3s ease",
+            "&:hover": {
+              transform: "scale(1.05)",
+              boxShadow: "0 8px 16px rgba(0, 0, 0, 0.2)",
+            },
           }}
         >
           <CardContent>
@@ -201,10 +206,15 @@ const MyApp: React.FC = () => {
           sx={{
             maxWidth: 320,
             minWidth: 320,
-            bgcolor: "rgba(0 0 0 / 0.5)", // Semi-transparent dark background
-            backdropFilter: "blur(5px)", // Apply the blur effect
-            borderRadius: "12px", // Optional: Add rounded corners
-            padding: 2, // Add some padding inside the card
+            bgcolor: "rgba(0 0 0 / 0.5)",
+            backdropFilter: "blur(5px)",
+            borderRadius: "12px",
+            padding: 2,
+            transition: "transform 0.3s ease, box-shadow 0.3s ease",
+            "&:hover": {
+              transform: "scale(1.05)",
+              boxShadow: "0 8px 16px rgba(0, 0, 0, 0.2)",
+            },
           }}
         >
           <CardContent
@@ -265,7 +275,6 @@ const MyApp: React.FC = () => {
               </Alert>
             )}
           </CardContent>
-          
         </Card>
         <Verify />
       </Box>

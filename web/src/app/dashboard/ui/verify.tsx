@@ -119,14 +119,17 @@ export default function Verify() {
         {/* Verify PDF Card */}
         <Card
           sx={{
-            maxWidth: "400px",
-            minWidth: 320,
             maxWidth: 320,
-            bgcolor: "rgba(0 0 0 / 0.5)", // Semi-transparent dark background
-            backdropFilter: "blur(5px)", // Apply the blur effect
-            borderRadius: "12px", // Optional: Add rounded corners
-            padding: 2, // Add some padding inside the card
-            boxShadow: 3, // Add shadow for depth
+            minWidth: 320,
+            bgcolor: "rgba(0 0 0 / 0.5)",
+            backdropFilter: "blur(5px)",
+            borderRadius: "12px",
+            padding: 2,
+            transition: "transform 0.3s ease, box-shadow 0.3s ease",
+            "&:hover": {
+              transform: "scale(1.05)",
+              boxShadow: "0 8px 16px rgba(0, 0, 0, 0.2)",
+            },
           }}
         >
           <CardContent>
@@ -179,20 +182,46 @@ export default function Verify() {
               style={{
                 width: "100%",
                 marginBottom: "16px",
-                backgroundColor: "rgba(0, 0, 0, 0.5)", // Semi-transparent dark background
-                color: "white",
+                backgroundColor: "rgba(0, 0, 0, 0.7)", // Darker semi-transparent background
+                color: "white", // Ensure the font color is white
                 padding: "8px",
                 borderRadius: "4px",
-                backdropFilter: "blur(5px)", // Apply blur effect
+                backdropFilter: "blur(10px)", // Apply blur effect
                 border: "1px solid rgba(255, 255, 255, 0.3)", // Optional: border to enhance visibility
+                appearance: "none", // Remove default styles in some browsers
+                WebkitAppearance: "none", // Safari fix
+                MozAppearance: "none", // Firefox fix
               }}
             >
-              <option  value="">Select a file to verify</option>
+              <option
+                value=""
+                style={{
+                  color: "white",
+                  backgroundColor: "rgba(0, 0, 0, 0.7)",
+                }}
+              >
+                Select a file to verify
+              </option>
               {loading ? (
-                <option  disabled>Loading...</option>
+                <option
+                  disabled
+                  style={{
+                    color: "white",
+                    backgroundColor: "rgba(0, 0, 0, 0.7)",
+                  }}
+                >
+                  Loading...
+                </option>
               ) : (
                 files.map((file) => (
-                  <option key={file.id} value={file.id}>
+                  <option
+                    key={file.id}
+                    value={file.id}
+                    style={{
+                      color: "white",
+                      backgroundColor: "rgba(0, 0, 0, 0.7)",
+                    }}
+                  >
                     {file.response.fileName || "Unnamed file"}
                   </option>
                 ))
