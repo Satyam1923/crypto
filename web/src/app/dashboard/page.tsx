@@ -58,7 +58,7 @@ const MyApp: React.FC = () => {
     const file = event.target.files?.[0];
     if (file && file.type === "application/pdf") {
       setSelectedFile(file);
-      setFileName(file.name); // Set the selected file name
+      setFileName(file.name); 
     } else {
       alert("Please select a valid PDF file.");
     }
@@ -68,7 +68,7 @@ const MyApp: React.FC = () => {
     if (selectedFile) {
       await extractTextFromPDF(selectedFile);
       setSelectedFile(null);
-      setFileName(null); // Clear the displayed file name after upload
+      setFileName(null); 
     } else {
       alert("Please select a PDF file to upload.");
     }
@@ -146,7 +146,6 @@ const MyApp: React.FC = () => {
   return (
     <Container
       sx={{
-        bgcolor: "black",
         minHeight: "100vh",
         minWidth: "100vw",
         display: "flex",
@@ -155,8 +154,17 @@ const MyApp: React.FC = () => {
         p: 5,
       }}
     >
-      <Box display="flex" justifyContent="space-around" flexWrap="wrap" gap={4}>
-        <Card sx={{ maxWidth: 320, bgcolor: "grey.900" }}>
+      <Box display="flex" justifyContent="center" flexWrap="wrap" gap={4}>
+        <Card
+          sx={{
+            maxWidth: 320,
+            minWidth: 320,
+            bgcolor: "rgba(0 0 0 / 0.5)", // Semi-transparent dark background
+            backdropFilter: "blur(5px)", // Apply the blur effect
+            borderRadius: "12px", // Optional: Add rounded corners
+            padding: 2, // Add some padding inside the card
+          }}
+        >
           <CardContent>
             <Typography variant="h5" color="white" align="center" gutterBottom>
               Uploaded Files
@@ -169,8 +177,7 @@ const MyApp: React.FC = () => {
                   uploadedFiles.map((file) => (
                     <ListItem key={file.id}>
                       <ListItemIcon>
-                        <DescriptionIcon sx={{ color: "white" }} />{" "}
-                        {/* Add PDF icon */}
+                        <DescriptionIcon sx={{ color: "white" }} />
                       </ListItemIcon>
                       <ListItemText>
                         <Typography color="white">
@@ -180,7 +187,9 @@ const MyApp: React.FC = () => {
                     </ListItem>
                   ))
                 ) : (
-                  <Typography color="white">No files uploaded yet.</Typography>
+                  <Typography style={{ padding: 20 }} color="white">
+                    No files uploaded yet.
+                  </Typography>
                 )}
               </List>
             )}
@@ -188,7 +197,16 @@ const MyApp: React.FC = () => {
         </Card>
 
         {/* Upload PDF Card */}
-        <Card sx={{ maxWidth: 320, bgcolor: "grey.900" }}>
+        <Card
+          sx={{
+            maxWidth: 320,
+            minWidth: 320,
+            bgcolor: "rgba(0 0 0 / 0.5)", // Semi-transparent dark background
+            backdropFilter: "blur(5px)", // Apply the blur effect
+            borderRadius: "12px", // Optional: Add rounded corners
+            padding: 2, // Add some padding inside the card
+          }}
+        >
           <CardContent
             style={{ color: "white", minHeight: 100, marginBottom: "16px" }}
           >
@@ -247,8 +265,9 @@ const MyApp: React.FC = () => {
               </Alert>
             )}
           </CardContent>
-          <Verify />
+          
         </Card>
+        <Verify />
       </Box>
     </Container>
   );

@@ -4,6 +4,7 @@ import { initializeApp } from 'firebase/app';
 import { getAuth, GoogleAuthProvider, Auth } from 'firebase/auth';
 import { getFirestore, Firestore } from 'firebase/firestore';
 
+// Your Firebase configuration
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
   authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
@@ -27,3 +28,7 @@ export const googleProvider = new GoogleAuthProvider();
 
 // Initialize Firestore
 export const db: Firestore = getFirestore(app);
+
+
+// Export the Firebase app (optional, if you need it in your application)
+export default app;

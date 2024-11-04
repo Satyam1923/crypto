@@ -5,7 +5,7 @@ import firestoreReducer from './slices/firestoreSlice';
 export const store = configureStore({
   reducer: {
     auth: authReducer,
-    firestore: firestoreReducer, 
+    firestore: firestoreReducer,
   },
 });
 

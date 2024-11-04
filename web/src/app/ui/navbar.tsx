@@ -4,6 +4,7 @@ import { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
 import { IoHomeOutline } from "react-icons/io5";
 import { FaUserCircle } from "react-icons/fa";
+import { MdHome } from "react-icons/md";
 import { useSelector, useDispatch } from "react-redux";
 import { AppDispatch, RootState } from "../../redux/store";
 import { logout } from "../../redux/slices/authSlice";
@@ -56,19 +57,18 @@ export default function Navbar() {
   }, [isDropdownOpen]);
 
   return (
-    <div className="sticky top-0 z-50 bg-black/60 backdrop-blur-lg shadow-lg">
-      <div className="flex justify-center items-center h-12 px-4 mx-auto max-w-screen-lg">
+    <div className="sticky top-2 z-50 rounded-2xl bg-black/70 backdrop-blur-2xl shadow-lg w-2/4 mx-auto">
+      <div className="flex justify-center  items-center h-12 px-4 mx-auto">
         <div className="flex justify-between w-full items-center text-white">
           <ul className="flex w-full justify-between">
             <li>
               <Link href="/" className="flex-initial m-4" aria-label="Home">
                 <div className="flex gap-2 items-center">
-                  <IoHomeOutline />
-                  Home
+                  <MdHome size={30} />
                 </div>
               </Link>
             </li>
-            <li className="relative mt-1 dropdown">
+            <li className="relative mt-2 dropdown">
               <button
                 onClick={toggleDropdown}
                 className="flex-initial m-4 focus:outline-none"
@@ -89,7 +89,7 @@ export default function Navbar() {
                 )}
               </button>
               {isDropdownOpen && (
-                <div className="absolute right-0 mt-2 w-50 rounded-lg shadow-lg z-10 backdrop-blur-lg bg-black/70 border border-gray-700 transition duration-200 ease-in-out">
+                <div className="absolute right-0 mt-2 w-50 rounded-lg shadow-lg z-10 backdrop-blur-lg bg-black/60 border border-gray-700 transition duration-200 ease-in-out">
                   {user ? (
                     <div className="p-2">
                       <p className="font-semibold">{user.email}</p>

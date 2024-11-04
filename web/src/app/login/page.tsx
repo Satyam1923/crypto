@@ -47,18 +47,34 @@ export default function LoginPage() {
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        backgroundColor: "black",
+        background:
+          'url("/path-to-your-background-image.jpg") no-repeat center center fixed',
+        backgroundSize: "cover",
       }}
     >
-      <Card sx={{ width: 400, backgroundColor: "gray" }}>
+      <Card
+        sx={{
+          width: 400,
+          backgroundColor: "rgba(0, 0, 0, 0.5)",
+          backdropFilter: "blur(10px)", // Apply blur effect
+          borderRadius: "12px", // Optional: Add rounded corners
+          boxShadow: 3, // Add shadow for depth
+        }}
+      >
         <CardContent>
-          <Typography variant="h4" component="h1" gutterBottom align="center">
+          <Typography
+            variant="h4"
+            component="h1"
+            gutterBottom
+            align="center"
+            color="white"
+          >
             Login
           </Typography>
 
           {user ? (
             <>
-              <Typography variant="h6" align="center">
+              <Typography variant="h6" align="center" color="white">
                 Welcome, {user.email}
               </Typography>
               <Button
@@ -71,7 +87,12 @@ export default function LoginPage() {
               </Button>
             </>
           ) : (
-            <Typography variant="body1" align="center" gutterBottom>
+            <Typography
+              variant="body1"
+              align="center"
+              gutterBottom
+              color="white"
+            >
               Please log in
             </Typography>
           )}
@@ -85,6 +106,25 @@ export default function LoginPage() {
                 margin="normal"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
+                InputLabelProps={{
+                  style: { color: "white" }, // Set the label color to white
+                }}
+                InputProps={{
+                  style: { color: "white" }, // Set the input text color to white
+                }}
+                sx={{
+                  "& .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline": {
+                    borderColor: "white", // Set the border color to white
+                  },
+                  "& .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline":
+                    {
+                      borderColor: "white", // Change border color on hover
+                    },
+                  "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
+                    {
+                      borderColor: "white", // Change border color when focused
+                    },
+                }}
               />
               <TextField
                 fullWidth
@@ -94,6 +134,25 @@ export default function LoginPage() {
                 margin="normal"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                InputLabelProps={{
+                  style: { color: "white" }, // Set the label color to white
+                }}
+                InputProps={{
+                  style: { color: "white" }, // Set the input text color to white
+                }}
+                sx={{
+                  "& .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline": {
+                    borderColor: "white", // Set the border color to white
+                  },
+                  "& .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline":
+                    {
+                      borderColor: "white", // Change border color on hover
+                    },
+                  "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
+                    {
+                      borderColor: "white", // Change border color when focused
+                    },
+                }}
               />
               <Button
                 fullWidth
@@ -127,7 +186,7 @@ export default function LoginPage() {
           )}
 
           {status === "loading" && (
-            <Typography variant="body2" color="textSecondary" align="center">
+            <Typography variant="body2" color="white" align="center">
               Loading...
             </Typography>
           )}
