@@ -17,8 +17,13 @@ import {
   CardContent,
   TextField,
   Typography,
+  IconButton,
+  InputAdornment,
 } from "@mui/material";
 import GoogleIcon from "@mui/icons-material/Google";
+import EmailIcon from "@mui/icons-material/Email";
+import Visibility from "@mui/icons-material/Visibility";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
 
 export default function LoginPage() {
   const dispatch = useDispatch<AppDispatch>();
@@ -26,6 +31,7 @@ export default function LoginPage() {
   const { user, status, error } = useSelector((state: RootState) => state.auth);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
 
   useEffect(() => {
     // Redirect to home page if the user is logged in
@@ -39,6 +45,7 @@ export default function LoginPage() {
   const handleEmailRegister = () =>
     dispatch(registerWithEmail({ email, password }));
   const handleLogout = () => dispatch(logout());
+  const toggleShowPassword = () => setShowPassword((prev) => !prev);
 
   return (
     <Box
@@ -78,31 +85,6 @@ export default function LoginPage() {
             Login
           </Typography>
 
-          {user ? (
-            <>
-              <Typography variant="h6" align="center" color="white">
-                Welcome, {user.email}
-              </Typography>
-              <Button
-                fullWidth
-                variant="contained"
-                color="primary"
-                onClick={handleLogout}
-              >
-                Logout
-              </Button>
-            </>
-          ) : (
-            <Typography
-              variant="body1"
-              align="center"
-              gutterBottom
-              color="white"
-            >
-              Please log in
-            </Typography>
-          )}
-
           {!user && (
             <>
               <TextField
@@ -116,6 +98,11 @@ export default function LoginPage() {
                   style: { color: "white" }, // Set the label color to white
                 }}
                 InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <EmailIcon style={{ color: "white" }} />
+                    </InputAdornment>
+                  ),
                   style: { color: "white" }, // Set the input text color to white
                 }}
                 sx={{
@@ -135,7 +122,7 @@ export default function LoginPage() {
               <TextField
                 fullWidth
                 label="Password"
-                type="password"
+                type={showPassword ? "text" : "password"}
                 variant="outlined"
                 margin="normal"
                 value={password}
@@ -145,6 +132,17 @@ export default function LoginPage() {
                 }}
                 InputProps={{
                   style: { color: "white" }, // Set the input text color to white
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton
+                        onClick={toggleShowPassword}
+                        edge="end"
+                        style={{ color: "white" }}
+                      >
+                        {showPassword ? <VisibilityOff /> : <Visibility />}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
                 }}
                 sx={{
                   "& .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline": {
