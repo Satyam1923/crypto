@@ -58,13 +58,16 @@ export default function Navbar() {
 
   return (
     <div className="sticky top-2 z-50 rounded-2xl bg-black/70 backdrop-blur-2xl shadow-lg w-2/4 mx-auto">
-      <div className="flex justify-center  items-center h-12 px-4 mx-auto">
+      <div className="flex justify-center items-center h-12 px-4 mx-auto">
         <div className="flex justify-between w-full items-center text-white">
           <ul className="flex w-full justify-between">
             <li>
               <Link href="/" className="flex-initial m-4" aria-label="Home">
-                <div className="flex gap-2 items-center">
-                  <MdHome size={30} />
+                <div className="flex gap-2 items-center hover:scale-105 transition-transform duration-200 ease-in-out">
+                  <MdHome
+                    size={30}
+                    className="hover:text-gray-300 transition-colors duration-200"
+                  />
                 </div>
               </Link>
             </li>
@@ -82,20 +85,20 @@ export default function Navbar() {
                     alt="User profile"
                     width={32}
                     height={32}
-                    className="rounded-full"
+                    className="rounded-full hover:scale-105 transition-transform duration-200 ease-in-out"
                   />
                 ) : (
-                  <FaUserCircle className="w-8 h-8" />
+                  <FaUserCircle className="w-8 h-8 hover:text-gray-300 transition-colors duration-200" />
                 )}
               </button>
               {isDropdownOpen && (
-                <div className="absolute right-0 mt-2 w-50 rounded-lg shadow-lg z-10 backdrop-blur-lg bg-black/60 border border-gray-700 transition duration-200 ease-in-out">
+                <div className="absolute right-0 mt-2 w-50 rounded-lg shadow-lg z-10 backdrop-blur-lg bg-black/60 border border-gray-700 transition-opacity duration-200 ease-in-out opacity-100">
                   {user ? (
                     <div className="p-2">
                       <p className="font-semibold">{user.email}</p>
                       <button
                         onClick={handleLogout}
-                        className="block w-full text-left px-4 py-2 hover:bg-gray-700 transition duration-150"
+                        className="block w-full text-left px-4 py-2 hover:bg-gray-700 hover:scale-105 transition-all duration-150 rounded-lg"
                       >
                         Logout
                       </button>
@@ -103,7 +106,7 @@ export default function Navbar() {
                   ) : (
                     <Link
                       href="/login"
-                      className="block w-full text-left px-4 py-2 hover:bg-gray-700 transition duration-150"
+                      className="block w-full text-left px-4 py-2 hover:bg-gray-700 hover:scale-105 transition-all duration-150 rounded-lg"
                     >
                       Login
                     </Link>

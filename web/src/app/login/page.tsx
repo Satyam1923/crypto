@@ -55,10 +55,16 @@ export default function LoginPage() {
       <Card
         sx={{
           width: 400,
-          backgroundColor: "rgba(0, 0, 0, 0.5)",
-          backdropFilter: "blur(10px)", // Apply blur effect
-          borderRadius: "12px", // Optional: Add rounded corners
-          boxShadow: 3, // Add shadow for depth
+          minWidth: 320,
+          bgcolor: "rgba(0 0 0 / 0.5)",
+          backdropFilter: "blur(5px)",
+          borderRadius: "12px",
+          padding: 2,
+          transition: "transform 0.3s ease, box-shadow 0.3s ease",
+          "&:hover": {
+            transform: "scale(1.05)",
+            boxShadow: "0 8px 16px rgba(0, 0, 0, 0.2)",
+          },
         }}
       >
         <CardContent>
