@@ -97,13 +97,16 @@ export default function Verify() {
     signature: string
   ) => {
     try {
-      const response = await fetch("http://localhost:8000/verify", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ msg: text, public_key: publicKey, signature }),
-      });
+      const response = await fetch(
+        "https://crypto-kappa-snowy.vercel.app/verify",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ msg: text, public_key: publicKey, signature }),
+        }
+      );
 
       if (!response.ok)
         throw new Error(`HTTP error! status: ${response.status}`);
