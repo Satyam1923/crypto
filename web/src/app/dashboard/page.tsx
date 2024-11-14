@@ -2,6 +2,7 @@
 
 import { pdfjs } from "react-pdf";
 import { useState, useEffect } from "react";
+import type { AppDispatch } from "../../redux/store";
 import { useDispatch, useSelector } from "react-redux";
 import { addData, fetchData } from "../../redux/slices/firestoreSlice";
 import { RootState } from "../../redux/store";
@@ -26,7 +27,7 @@ import { UploadFile as UploadIcon } from "@mui/icons-material";
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
 
 const MyApp: React.FC = () => {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   const userEmail = useSelector((state: RootState) => state.auth.user?.email);
   const [backendResponse, setBackendResponse] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
