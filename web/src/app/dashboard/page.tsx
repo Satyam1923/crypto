@@ -58,7 +58,7 @@ const MyApp: React.FC = () => {
     const file = event.target.files?.[0];
     if (file && file.type === "application/pdf") {
       setSelectedFile(file);
-      setFileName(file.name); 
+      setFileName(file.name);
     } else {
       alert("Please select a valid PDF file.");
     }
@@ -68,7 +68,7 @@ const MyApp: React.FC = () => {
     if (selectedFile) {
       await extractTextFromPDF(selectedFile);
       setSelectedFile(null);
-      setFileName(null); 
+      setFileName(null);
     } else {
       alert("Please select a PDF file to upload.");
     }
@@ -206,7 +206,7 @@ const MyApp: React.FC = () => {
           sx={{
             maxWidth: 320,
             minWidth: 320,
-            maxHeight:260,
+            maxHeight: 260,
             bgcolor: "rgba(0 0 0 / 0.5)",
             backdropFilter: "blur(5px)",
             borderRadius: "12px",
@@ -265,6 +265,7 @@ const MyApp: React.FC = () => {
               Upload
             </Button>
 
+            {loading && <CircularProgress color="primary" />}
             {error && (
               <Alert severity="error" sx={{ mt: 2 }}>
                 {error}
