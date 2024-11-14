@@ -1,66 +1,72 @@
-// src/redux/slices/firestoreSlice.ts
-
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
-import { db } from '../../lib/firebase'; // Adjust the path to your Firebase configuration
-import { RootState } from '../store'; // Import RootState to access user ID
+import { db } from '../../lib/firebase'; 
+import { RootState } from '../store'; 
 import { collection, addDoc, getDocs, query, where, doc, deleteDoc } from 'firebase/firestore';
 
 // Define a type for your Firestore data
 interface DataItem {
-    id?: string; // Firestore document ID
-    userId: string; // User ID to associate the data with
+    id?: string;
+    userId: string;
     name: string;
     value: number;
 }
 
 interface FileItem {
-    id?: string; // Firestore document ID
-    userId: string; // User ID to associate the file with
+    id?: string;
+    userId: string;
     fileName: string;
-    fileUrl: string; // URL of the file in Firestore
+    fileUrl: string;
 }
 
 interface FirestoreState {
     data: DataItem[];
-    files: FileItem[]; // New state for files
+    files: FileItem[];
     status: 'idle' | 'loading' | 'succeeded' | 'failed';
     error: string | null;
 }
 
 const initialState: FirestoreState = {
     data: [],
-    files: [], // Initialize the files array
+    files: [],
     status: 'idle',
     error: null,
 };
 
+interface AddDataPayload {
+    collectionPath: string;
+    documentId: string;
+    response: any; 
+}
+
 // Create an async thunk for adding data to Firestore
-export const addData = createAsyncThunk<DataItem, Omit<DataItem, 'id'>>(
+export const addData = createAsyncThunk<DataItem, AddDataPayload>(
     'firestore/addData',
-    async (data, { getState }) => {
+    async ({ collectionPath, documentId, response }, { getState }) => {
         const state = getState() as RootState;
-        const userId = state.auth.user?.uid; // Get the current user's ID
+        const userId = state.auth.user?.uid;
 
         if (!userId) throw new Error('User is not authenticated');
 
-        const docRef = await addDoc(collection(db, 'yourCollection'), { ...data, userId });
-        return { id: docRef.id, ...data, userId }; // Return the added data with its new ID
+        // Use the collectionPath in your Firestore operation
+        const docRef = await addDoc(collection(db, collectionPath), { ...response, userId });
+        return { id: docRef.id, ...response, userId }; 
     }
 );
 
-// Create an async thunk for fetching data from Firestore
-export const fetchData = createAsyncThunk<DataItem[], void>(
+// Create an async thunk for fetching data from Firestore with dynamic collection path
+export const fetchData = createAsyncThunk<DataItem[], string>(
     'firestore/fetchData',
-    async (_, { getState }) => {
+    async (collectionPath, { getState }) => {
         const state = getState() as RootState;
-        const userId = state.auth.user?.uid; // Get the current user's ID
+        const userId = state.auth.user?.uid;
 
         if (!userId) throw new Error('User is not authenticated');
 
-        const q = query(collection(db, 'yourCollection'), where('userId', '==', userId));
+        // Use the collectionPath in your Firestore query
+        const q = query(collection(db, collectionPath), where('userId', '==', userId));
         const snapshot = await getDocs(q);
 
-        return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })) as DataItem[]; // Type assertion
+        return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })) as DataItem[]; 
     }
 );
 
@@ -69,7 +75,7 @@ export const removeData = createAsyncThunk<string, string>(
     'firestore/removeData',
     async (id) => {
         await deleteDoc(doc(db, 'yourCollection', id));
-        return id; // Return the ID of the deleted document
+        return id; 
     }
 );
 
@@ -78,14 +84,14 @@ export const fetchFiles = createAsyncThunk<FileItem[], void>(
     'firestore/fetchFiles',
     async (_, { getState }) => {
         const state = getState() as RootState;
-        const userId = state.auth.user?.uid; // Get the current user's ID
+        const userId = state.auth.user?.uid;
 
         if (!userId) throw new Error('User is not authenticated');
 
         const q = query(collection(db, 'yourFilesCollection'), where('userId', '==', userId));
         const snapshot = await getDocs(q);
 
-        return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })) as FileItem[]; // Type assertion
+        return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })) as FileItem[]; 
     }
 );
 
@@ -100,7 +106,7 @@ const firestoreSlice = createSlice({
             })
             .addCase(addData.fulfilled, (state, action: PayloadAction<DataItem>) => {
                 state.status = 'succeeded';
-                state.data.push(action.payload); // Add the new data to the state
+                state.data.push(action.payload); 
             })
             .addCase(addData.rejected, (state, action) => {
                 state.status = 'failed';
@@ -111,7 +117,7 @@ const firestoreSlice = createSlice({
             })
             .addCase(fetchData.fulfilled, (state, action: PayloadAction<DataItem[]>) => {
                 state.status = 'succeeded';
-                state.data = action.payload; // Replace current state with fetched data
+                state.data = action.payload;
             })
             .addCase(fetchData.rejected, (state, action) => {
                 state.status = 'failed';
@@ -122,7 +128,7 @@ const firestoreSlice = createSlice({
             })
             .addCase(removeData.fulfilled, (state, action: PayloadAction<string>) => {
                 state.status = 'succeeded';
-                state.data = state.data.filter(item => item.id !== action.payload); // Remove the deleted data from state
+                state.data = state.data.filter(item => item.id !== action.payload);
             })
             .addCase(removeData.rejected, (state, action) => {
                 state.status = 'failed';

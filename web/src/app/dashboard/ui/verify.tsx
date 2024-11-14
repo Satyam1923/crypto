@@ -33,7 +33,14 @@ export default function Verify() {
       if (userEmail) {
         setLoading(true);
         try {
-          const files = await dispatch(fetchData()).unwrap();
+          // Construct the collection path dynamically, for example:
+          const collectionPath = `users/${userEmail.replace(
+            /[@.]/g,
+            "_"
+          )}/uploads`;
+
+          // Pass the collectionPath as the argument
+          const files = await dispatch(fetchData(collectionPath)).unwrap();
           setFiles(files);
         } catch (err) {
           console.error("Error fetching files:", err);
@@ -45,6 +52,7 @@ export default function Verify() {
     };
     fetchFiles();
   }, [dispatch, userEmail]);
+
 
   const handleFileSelect = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const fileId = event.target.value;
@@ -58,8 +66,8 @@ export default function Verify() {
         const text = await extractTextFromPDF(selectedFile);
         const response = await sendPdfToBackend(
           text,
-          selectedFileData.response.public_key,
-          selectedFileData.response.signature
+          selectedFileData.public_key,
+          selectedFileData.signature
         );
 
         if (response) {
@@ -68,7 +76,7 @@ export default function Verify() {
               ? "Verification successful"
               : "Verification failed"
           );
-          setError(null); // Clear any previous error
+          setError(null); 
         }
       } catch (err) {
         console.error("Error during verification:", err);
@@ -226,7 +234,7 @@ export default function Verify() {
                     backgroundColor: "rgba(0, 0, 0, 0.7)",
                   }}
                 >
-                  {file.response.fileName || "Unnamed file"}
+                  {file.fileName || "Unnamed file"}
                 </option>
               ))
             )}

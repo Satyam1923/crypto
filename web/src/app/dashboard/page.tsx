@@ -3,6 +3,7 @@
 import { pdfjs } from "react-pdf";
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch } from "../../redux/store";
 import { addData, fetchData } from "../../redux/slices/firestoreSlice";
 import { RootState } from "../../redux/store";
 import Verify from "./ui/verify";
@@ -25,23 +26,30 @@ import { UploadFile as UploadIcon } from "@mui/icons-material";
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
 
-const MyApp = () => {
-  const dispatch = useDispatch();
-  const userEmail = useSelector((state) => state.auth.user?.email);
-  const [backendResponse, setBackendResponse] = useState(null);
-  const [error, setError] = useState(null);
-  const [success, setSuccess] = useState(false);
-  const [uploadedFiles, setUploadedFiles] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [selectedFile, setSelectedFile] = useState(null);
-  const [fileName, setFileName] = useState(null);
+const MyApp: React.FC = () => {
+  const dispatch = useDispatch<AppDispatch>();
+  const userEmail = useSelector((state: RootState) => state.auth.user?.email);
+  const [backendResponse, setBackendResponse] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<boolean>(false);
+  const [uploadedFiles, setUploadedFiles] = useState<any[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [fileName, setFileName] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchFiles = async () => {
       if (userEmail) {
         setLoading(true);
         try {
-          const files = await dispatch(fetchData()).unwrap();
+          // Construct the collection path dynamically, for example:
+          const collectionPath = `users/${userEmail.replace(
+            /[@.]/g,
+            "_"
+          )}/uploads`;
+
+          // Pass the collectionPath as the argument
+          const files = await dispatch(fetchData(collectionPath)).unwrap();
           setUploadedFiles(files);
         } catch (err) {
           console.error("Error fetching files:", err);
@@ -54,7 +62,8 @@ const MyApp = () => {
     fetchFiles();
   }, [dispatch, userEmail]);
 
-  const onFileChange = (event) => {
+
+  const onFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file && file.type === "application/pdf") {
       setSelectedFile(file);
@@ -74,14 +83,14 @@ const MyApp = () => {
     }
   };
 
-  const extractTextFromPDF = async (file) => {
+  const extractTextFromPDF = async (file: File) => {
     const pdf = await pdfjs.getDocument(URL.createObjectURL(file)).promise;
     let fullText = "";
 
     for (let i = 1; i <= pdf.numPages; i++) {
       const page = await pdf.getPage(i);
       const content = await page.getTextContent();
-      const pageText = content.items.map((item) => item.str).join(" ");
+      const pageText = content.items.map((item: any) => item.str).join(" ");
       fullText += pageText + " ";
     }
 
@@ -89,7 +98,7 @@ const MyApp = () => {
     await uploadResponseToFirestore(response, file.name);
   };
 
-  const sendPdfToBackend = async (text) => {
+  const sendPdfToBackend = async (text: string) => {
     try {
       const response = await fetch(
         "https://crypto-kappa-snowy.vercel.app/sign",
@@ -114,7 +123,7 @@ const MyApp = () => {
     }
   };
 
-  const uploadResponseToFirestore = async (response, fileName) => {
+  const uploadResponseToFirestore = async (response: any, fileName: string) => {
     if (!userEmail) {
       setError("User is not authenticated.");
       return;
@@ -137,7 +146,6 @@ const MyApp = () => {
           response: uploadData,
         })
       ).unwrap();
-
       setSuccess(true);
       setBackendResponse("Response uploaded successfully to Firestore.");
     } catch (err) {
@@ -189,7 +197,7 @@ const MyApp = () => {
                       </ListItemIcon>
                       <ListItemText>
                         <Typography color="white">
-                          {file.response.fileName || "No File Name"}
+                          {file.fileName || "No File Name"}
                         </Typography>
                       </ListItemText>
                     </ListItem>
