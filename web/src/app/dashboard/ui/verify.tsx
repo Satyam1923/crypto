@@ -1,5 +1,6 @@
 "use client";
 import { pdfjs } from "react-pdf";
+import { AppDispatch} from '../../../redux/store'
 import { useState, useEffect } from "react";
 import { RootState } from "@/redux/store";
 import { useSelector, useDispatch } from "react-redux";
@@ -18,7 +19,7 @@ import UploadIcon from "@mui/icons-material/CloudUpload"; // Import upload icon
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
 
 export default function Verify() {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   const userEmail = useSelector((state: RootState) => state.auth.user?.email);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [backendResponse, setBackendResponse] = useState<string | null>(null);

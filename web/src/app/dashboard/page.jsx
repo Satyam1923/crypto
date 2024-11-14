@@ -2,7 +2,6 @@
 
 import { pdfjs } from "react-pdf";
 import { useState, useEffect } from "react";
-import type { AppDispatch } from "../../redux/store";
 import { useDispatch, useSelector } from "react-redux";
 import { addData, fetchData } from "../../redux/slices/firestoreSlice";
 import { RootState } from "../../redux/store";
@@ -26,16 +25,16 @@ import { UploadFile as UploadIcon } from "@mui/icons-material";
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
 
-const MyApp: React.FC = () => {
-  const dispatch = useDispatch<AppDispatch>();
-  const userEmail = useSelector((state: RootState) => state.auth.user?.email);
-  const [backendResponse, setBackendResponse] = useState<string | null>(null);
-  const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState<boolean>(false);
-  const [uploadedFiles, setUploadedFiles] = useState<any[]>([]);
-  const [loading, setLoading] = useState<boolean>(false);
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [fileName, setFileName] = useState<string | null>(null);
+const MyApp = () => {
+  const dispatch = useDispatch();
+  const userEmail = useSelector((state) => state.auth.user?.email);
+  const [backendResponse, setBackendResponse] = useState(null);
+  const [error, setError] = useState(null);
+  const [success, setSuccess] = useState(false);
+  const [uploadedFiles, setUploadedFiles] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [fileName, setFileName] = useState(null);
 
   useEffect(() => {
     const fetchFiles = async () => {
@@ -55,7 +54,7 @@ const MyApp: React.FC = () => {
     fetchFiles();
   }, [dispatch, userEmail]);
 
-  const onFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const onFileChange = (event) => {
     const file = event.target.files?.[0];
     if (file && file.type === "application/pdf") {
       setSelectedFile(file);
@@ -75,14 +74,14 @@ const MyApp: React.FC = () => {
     }
   };
 
-  const extractTextFromPDF = async (file: File) => {
+  const extractTextFromPDF = async (file) => {
     const pdf = await pdfjs.getDocument(URL.createObjectURL(file)).promise;
     let fullText = "";
 
     for (let i = 1; i <= pdf.numPages; i++) {
       const page = await pdf.getPage(i);
       const content = await page.getTextContent();
-      const pageText = content.items.map((item: any) => item.str).join(" ");
+      const pageText = content.items.map((item) => item.str).join(" ");
       fullText += pageText + " ";
     }
 
@@ -90,7 +89,7 @@ const MyApp: React.FC = () => {
     await uploadResponseToFirestore(response, file.name);
   };
 
-  const sendPdfToBackend = async (text: string) => {
+  const sendPdfToBackend = async (text) => {
     try {
       const response = await fetch(
         "https://crypto-kappa-snowy.vercel.app/sign",
@@ -115,7 +114,7 @@ const MyApp: React.FC = () => {
     }
   };
 
-  const uploadResponseToFirestore = async (response: any, fileName: string) => {
+  const uploadResponseToFirestore = async (response, fileName) => {
     if (!userEmail) {
       setError("User is not authenticated.");
       return;
