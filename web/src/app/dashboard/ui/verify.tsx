@@ -136,7 +136,7 @@ export default function Verify() {
   };
 
   return (
-    <Container className="w-full  sm:w-56 min-w-40 mx-auto">
+    <Container className=" sm:w-56 min-w-40">
       <Card
         sx={{
           maxWidth: 320,
