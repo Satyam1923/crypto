@@ -109,16 +109,13 @@ const MyApp: React.FC = () => {
 
   const sendPdfToBackend = async (text: string) => {
     try {
-      const response = await fetch(
-        "https://crypto-kappa-snowy.vercel.app/sign",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ msg: text }),
-        }
-      );
+      const response = await fetch("http://localhost:8000/sign", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ msg: text }),
+      });
 
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);

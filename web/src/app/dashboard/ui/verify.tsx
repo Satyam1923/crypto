@@ -1,5 +1,4 @@
 "use client";
-import { pdfjs } from "react-pdf";
 import { AppDispatch} from '../../../redux/store'
 import { useState, useEffect } from "react";
 import { RootState } from "@/redux/store";
@@ -15,8 +14,6 @@ import {
   Alert,
 } from "@mui/material";
 import UploadIcon from "@mui/icons-material/CloudUpload"; // Import upload icon
-
-pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
 
 export default function Verify() {
   const dispatch = useDispatch<AppDispatch>();
@@ -117,16 +114,13 @@ export default function Verify() {
     signature: string
   ) => {
     try {
-      const response = await fetch(
-        "https://crypto-kappa-snowy.vercel.app/verify",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ msg: text, public_key: publicKey, signature }),
-        }
-      );
+      const response = await fetch("http://localhost:8000/verify", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ msg: text, public_key: publicKey, signature }),
+      });
 
       if (!response.ok)
         throw new Error(`HTTP error! status: ${response.status}`);
