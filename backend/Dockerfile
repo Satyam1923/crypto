@@ -4,6 +4,7 @@ WORKDIR /usr/src/app
 
 RUN pip install "fastapi[standard]"
 RUN pip install pycryptodome
+RUN pip install PyMuPDF
 
 COPY . . 
 

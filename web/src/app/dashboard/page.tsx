@@ -1,6 +1,5 @@
 "use client";
 
-import { pdfjs } from "react-pdf";
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch } from "../../redux/store";
@@ -24,7 +23,7 @@ import {
 } from "@mui/material";
 import { UploadFile as UploadIcon } from "@mui/icons-material";
 
-pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
+//pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
 
 const MyApp: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -84,18 +83,28 @@ const MyApp: React.FC = () => {
   };
 
   const extractTextFromPDF = async (file: File) => {
-    const pdf = await pdfjs.getDocument(URL.createObjectURL(file)).promise;
-    let fullText = "";
+    try {
+      // Create a FormData object to send the file
+      const formData = new FormData();
+      formData.append("file", file);
 
-    for (let i = 1; i <= pdf.numPages; i++) {
-      const page = await pdf.getPage(i);
-      const content = await page.getTextContent();
-      const pageText = content.items.map((item: any) => item.str).join(" ");
-      fullText += pageText + " ";
+      // Make a POST request to the backend
+      const response = await fetch(
+        "http://localhost:8000/extract-text-from-pdf/",
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
+      if (!response.ok) {
+        throw new Error(`Failed to extract text: ${response.status}`);
+      }
+      const { text } = await response.json();
+      const verificationResponse = await sendPdfToBackend(text.trim());
+      await uploadResponseToFirestore(verificationResponse, file.name);
+    } catch (error) {
+      console.error("Error extracting text from PDF:", error);
     }
-
-    const response = await sendPdfToBackend(fullText.trim());
-    await uploadResponseToFirestore(response, file.name);
   };
 
   const sendPdfToBackend = async (text: string) => {

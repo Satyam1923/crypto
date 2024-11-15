@@ -88,17 +88,28 @@ export default function Verify() {
   };
 
   const extractTextFromPDF = async (file: File) => {
-    const pdf = await pdfjs.getDocument(URL.createObjectURL(file)).promise;
-    let fullText = "";
-
-    for (let i = 1; i <= pdf.numPages; i++) {
-      const page = await pdf.getPage(i);
-      const content = await page.getTextContent();
-      const pageText = content.items.map((item: any) => item.str).join(" ");
-      fullText += pageText + " ";
+    try {
+      // Create a FormData object to send the file
+      const formData = new FormData();
+      formData.append("file", file);
+      const response = await fetch(
+        "http://localhost:8000/extract-text-from-pdf/",
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
+      if (!response.ok) {
+        throw new Error(`Failed to extract text: ${response.status}`);
+      }
+      const { text } = await response.json();
+      return text.trim(); 
+    } catch (error) {
+      console.error("Error extracting text from PDF:", error);
+      return "";
     }
-    return fullText.trim();
   };
+
 
   const sendPdfToBackend = async (
     text: string,
