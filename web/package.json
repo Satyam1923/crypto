@@ -19,9 +19,6 @@
     "firebase": "^11.0.1",
     "flowbite-react": "^0.10.2",
     "next": "14.2.15",
-    "pdf-ts": "^0.0.2",
-    "pdf.js-extract": "^0.2.1",
-    "pdfjs-dist": "^4.7.76",
     "pdfreader": "^3.0.5",
     "react": "^18",
     "react-dom": "^18",
@@ -30,7 +27,7 @@
     "react-redux": "^9.1.2"
   },
   "devDependencies": {
-    "@types/node": "^20",
+    "@types/node": "^22",
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "postcss": "^8",
