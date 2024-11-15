@@ -90,7 +90,7 @@ export default function Verify() {
       const formData = new FormData();
       formData.append("file", file);
       const response = await fetch(
-        "http://localhost:8000/extract-text-from-pdf/",
+        "https://crypto-fe3z-backend.vercel.app/extract-text-from-pdf/",
         {
           method: "POST",
           body: formData,
@@ -114,13 +114,16 @@ export default function Verify() {
     signature: string
   ) => {
     try {
-      const response = await fetch("http://localhost:8000/verify", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ msg: text, public_key: publicKey, signature }),
-      });
+      const response = await fetch(
+        "https://crypto-fe3z-backend.vercel.app/verify",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ msg: text, public_key: publicKey, signature }),
+        }
+      );
 
       if (!response.ok)
         throw new Error(`HTTP error! status: ${response.status}`);

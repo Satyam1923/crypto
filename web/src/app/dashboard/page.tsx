@@ -23,7 +23,6 @@ import {
 } from "@mui/material";
 import { UploadFile as UploadIcon } from "@mui/icons-material";
 
-//pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
 
 const MyApp: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -90,7 +89,7 @@ const MyApp: React.FC = () => {
 
       // Make a POST request to the backend
       const response = await fetch(
-        "http://localhost:8000/extract-text-from-pdf/",
+        "https://crypto-fe3z-backend.vercel.app/extract-text-from-pdf/",
         {
           method: "POST",
           body: formData,
@@ -109,13 +108,16 @@ const MyApp: React.FC = () => {
 
   const sendPdfToBackend = async (text: string) => {
     try {
-      const response = await fetch("http://localhost:8000/sign", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ msg: text }),
-      });
+      const response = await fetch(
+        "https://crypto-fe3z-backend.vercel.app/sign",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ msg: text }),
+        }
+      );
 
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
